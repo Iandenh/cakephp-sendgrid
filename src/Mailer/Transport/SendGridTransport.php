@@ -46,10 +46,7 @@ class SendGridTransport extends AbstractTransport
             'ccname' => [],
             'bcc' => [],
             'bccname' => [],
-            'replyto' => $email->replyTo(),
-            'recipient_metadata' => [],
-            'attachments' => [],
-            'images' => []
+            'replyto' => $email->replyTo()
         ];
         // Add receipients
         foreach (['to', 'cc', 'bcc'] as $type) {
