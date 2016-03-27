@@ -15,7 +15,7 @@ use Cake\Utility\Hash;
  * Time: 11:19
  * @property \Cake\Network\Http\Client $http
  */
-class SendGridTransport extends AbstractTransport
+class SendgridTransport extends AbstractTransport
 {
     public $http;
 
