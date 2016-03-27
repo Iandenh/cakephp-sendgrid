@@ -1,6 +1,6 @@
 <?php
 
-namespace SendgridEmail\Network\Email;
+namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
