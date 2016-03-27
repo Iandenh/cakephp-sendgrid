@@ -12,14 +12,14 @@ to your `composer.json` file and run.
 
 
     'Email' => [
-        'SendGrid' => [
-            'transport' => 'SendGridEmail',
+        'Sendgrid' => [
+            'transport' => 'SendgridEmail',
         ],
         
     ],
     'EmailTransport' => [
-        'SendGridEmail' => [
-            'className' => 'SendGridEmail.SendGrid',
+        'SendgridEmail' => [
+            'className' => 'SendgridEmail.Sendgrid',
             'api_key' => 'API_KEY_HERE'
         ]
     ]
