@@ -1,6 +1,6 @@
 {
     "name": "iandenh/cakephp-sendgrid",
-    "description": "SendGridEmail plugin for CakePHP",
+    "description": "SendgridEmail plugin for CakePHP",
     "type": "cakephp-plugin",
     "keywords": ["cakephp", "sendgrid"],
     "license": "MIT",
@@ -15,12 +15,12 @@
     },
     "autoload": {
         "psr-4": {
-            "SendGridEmail\\": "src"
+            "SendgridEmail\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SendGridEmail\\Test\\": "tests",
+            "SendgridEmail\\Test\\": "tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     }
