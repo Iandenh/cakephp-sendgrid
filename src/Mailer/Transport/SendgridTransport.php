@@ -67,7 +67,7 @@ class SendgridTransport extends AbstractTransport
         ]);
 
         $message = $this->_attachments($email, $message);
-        $this->_send($message);
+        return $this->_send($message);
     }
 
     /**
