@@ -1,6 +1,6 @@
 <?php
 
-namespace SendGridEmail\Network\Email;
+namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
@@ -18,7 +18,7 @@ use Cake\Utility\Hash;
  * 
  * @property \Cake\Network\Http\Client $http
  */
-class SendGridTransport extends AbstractTransport
+class SendgridTransport extends AbstractTransport
 {
     public $http;
 
@@ -70,7 +70,7 @@ class SendGridTransport extends AbstractTransport
         ]);
 
         $message = $this->_attachments($email, $message);
-        $this->_send($message);
+        return $this->_send($message);
     }
 
     /**
