@@ -9,10 +9,13 @@ use Cake\Network\Http\Client;
 use Cake\Utility\Hash;
 
 /**
- * Created by PhpStorm.
- * User: ian
- * Date: 26-2-16
- * Time: 11:19
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ *
+ * @author        Ian den Hartog (http://iandh.nl)
+ * @link          http://iandh.nl
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * 
  * @property \Cake\Network\Http\Client $http
  */
 class SendGridTransport extends AbstractTransport
