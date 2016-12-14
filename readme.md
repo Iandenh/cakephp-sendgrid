@@ -24,3 +24,5 @@ to your `composer.json` file and run.
         ]
     ]
 
+
+Based of [Lennaert/cakephp3-mandrill](https://github.com/Lennaert/cakephp3-mandrill)
