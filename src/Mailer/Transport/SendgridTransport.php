@@ -11,18 +11,27 @@ namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
-use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\SocketException;
 use Cake\Network\Http\Client;
 use Cake\Utility\Hash;
 
 /**
- * @property \Cake\Network\Http\Client $http
+ * Send mail using SendGrid
  */
 class SendgridTransport extends AbstractTransport
 {
+    /**
+     * Http client
+     *
+     * @var \Cake\Network\Http\Client
+     */
     public $http;
 
+    /**
+     * Transport config for this class
+     *
+     * @var array
+     */
     public $transportConfig = [
         'api_key' => null,
     ];
@@ -104,10 +113,10 @@ class SendgridTransport extends AbstractTransport
      * Format the attachments
      *
      * @param \Cake\Mailer\Email $email Email instance.
-     * @param type $message A message array.
+     * @param array $message A message array.
      * @return array Message
      */
-    protected function _attachments(Email $email, $message = [])
+    protected function _attachments(Email $email, array $message = [])
     {
         foreach ($email->attachments() as $filename => $attach) {
             $content = file_get_contents($attach['file']);
