@@ -49,21 +49,21 @@ class SendgridTransport extends AbstractTransport
         $message = [
             'html' => $email->message(Email::MESSAGE_HTML),
             'text' => $email->message(Email::MESSAGE_TEXT),
-            'subject' => mb_decode_mimeheader($email->subject()), // Decode because SendGrid is encoding
-            'from' => key($email->from()),
-            'fromname' => current($email->from()),
+            'subject' => mb_decode_mimeheader($email->getSubject()), // Decode because SendGrid is encoding
+            'from' => key($email->getFrom()),
+            'fromname' => current($email->getFrom()),
             'to' => [],
             'toname' => [],
             'cc' => [],
             'ccname' => [],
             'bcc' => [],
             'bccname' => [],
-            'replyto' => !empty(array_keys($email->replyTo())[0])
-                ? array_keys($email->replyTo())[0]
-                : key($email->from()),
+            'replyto' => !empty(array_keys($email->getReplyTo())[0])
+                ? array_keys($email->getReplyTo())[0]
+                : key($email->getReplyTo()),
         ];
         // Add receipients
-        foreach (['to', 'cc', 'bcc'] as $type) {
+        foreach (['getTo', 'getCc', 'getBcc'] as $type) {
             foreach ($email->{$type}() as $mail => $name) {
                 $message[$type][] = $mail;
                 $message[$type . 'name'][] = $name;
@@ -118,7 +118,7 @@ class SendgridTransport extends AbstractTransport
      */
     protected function _attachments(Email $email, array $message = [])
     {
-        foreach ($email->attachments() as $filename => $attach) {
+        foreach ($email->getAttachments() as $filename => $attach) {
             $content = file_get_contents($attach['file']);
             $message['files'][$filename] = $content;
             if (isset($attach['contentId'])) {
