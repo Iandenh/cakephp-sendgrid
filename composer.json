@@ -2,7 +2,10 @@
     "name": "iandenh/cakephp-sendgrid",
     "description": "SendgridEmail plugin for CakePHP",
     "type": "cakephp-plugin",
-    "keywords": ["cakephp", "sendgrid"],
+    "keywords": [
+        "cakephp",
+        "sendgrid"
+    ],
     "license": "MIT",
     "homepage": "https://github.com/Iandenh/cakephp-sendgrid",
     "support": {
@@ -10,7 +13,7 @@
         "source": "https://github.com/Iandenh/cakephp-sendgrid"
     },
     "require": {
-        "php": ">=5.4.16",
+        "php": ">=5.6.0",
         "cakephp/cakephp": "~3.4"
     },
     "autoload": {
