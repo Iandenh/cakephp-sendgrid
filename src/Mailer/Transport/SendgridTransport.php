@@ -25,14 +25,14 @@ class SendgridTransport extends AbstractTransport
      *
      * @var \Cake\Network\Http\Client
      */
-    public $http;
+    protected $http;
 
     /**
      * Transport config for this class
      *
      * @var array
      */
-    public $transportConfig = [
+    protected $transportConfig = [
         'api_key' => null,
     ];
 
