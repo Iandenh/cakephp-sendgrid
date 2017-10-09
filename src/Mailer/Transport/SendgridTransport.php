@@ -13,7 +13,6 @@ use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\SocketException;
 use Cake\Network\Http\Client;
-use Cake\Utility\Hash;
 
 /**
  * Send mail using SendGrid
@@ -32,7 +31,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @var array
      */
-    public $transportConfig = [
+    protected $_defaultConfig = [
         'api_key' => null,
     ];
 
@@ -44,8 +43,6 @@ class SendgridTransport extends AbstractTransport
      */
     public function send(Email $email)
     {
-        $this->transportConfig = Hash::merge($this->transportConfig, $this->_config);
-
         $message = [
             'html' => $email->message(Email::MESSAGE_HTML),
             'text' => $email->message(Email::MESSAGE_TEXT),
@@ -99,7 +96,7 @@ class SendgridTransport extends AbstractTransport
     protected function _send($message)
     {
         $options = [
-            'headers' => ['Authorization' => 'Bearer ' . $this->transportConfig['api_key']]
+            'headers' => ['Authorization' => 'Bearer ' . $this->getConfig('api_key')]
         ];
         $response = $this->http->post('/api/mail.send.json', $message, $options);
         if ($response->code !== 200) {
