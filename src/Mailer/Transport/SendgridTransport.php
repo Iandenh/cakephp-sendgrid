@@ -31,7 +31,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @var array
      */
-    public $_defaultConfig = [
+    protected $_defaultConfig = [
         'api_key' => null,
     ];
 
