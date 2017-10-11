@@ -7,6 +7,7 @@
  * @link          http://iandh.nl
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
@@ -100,12 +101,12 @@ class SendgridTransport extends AbstractTransport
         ];
         $response = $this->http->post('/api/mail.send.json', $message, $options);
         if ($response->code !== 200) {
-            throw new SocketException(
-                'SendGrid error ' .
-                $response->getStatusCode() . ' ' .
-                $response->getReasonPhrase() . ': ' .
+            throw new SocketException(sprintf(
+                'SendGrid error %s %s: %s',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
                 implode('; ', $response->json['errors'])
-            );
+            ));
         }
 
         return $response->json;
