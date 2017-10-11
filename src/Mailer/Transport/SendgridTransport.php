@@ -100,7 +100,7 @@ class SendgridTransport extends AbstractTransport
             'headers' => ['Authorization' => 'Bearer ' . $this->getConfig('api_key')]
         ];
         $response = $this->http->post('/api/mail.send.json', $message, $options);
-        if ($response->code !== 200) {
+        if ($response->getStatusCode() !== 200) {
             throw new SocketException(sprintf(
                 'SendGrid error %s %s: %s',
                 $response->getStatusCode(),
