@@ -2,11 +2,13 @@
 
 This is a Sendgrid Email Transport plugin for CakePHP 3.
 
-To install this plugin, you're best off using composer. Add:
+## Installation
 
-    "iandenh/cakephp-sendgrid": "*"
+You can install this plugin into your CakePHP application using [composer](http://getcomposer.org).
 
-to your `composer.json` file and run.
+```
+composer require iandenh/cakephp-sendgrid
+```
 
 ## Setting up your CakePHP application ##
 
