@@ -3,9 +3,9 @@
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  *
- * @author        Ian den Hartog (http://iandh.nl)
- * @link          http://iandh.nl
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @author        Ian den Hartog (https://iandh.nl)
+ * @link          https://iandh.nl
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
 namespace SendgridEmail\Mailer\Transport;
