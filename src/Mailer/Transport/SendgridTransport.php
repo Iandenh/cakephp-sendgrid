@@ -10,10 +10,10 @@
 
 namespace SendgridEmail\Mailer\Transport;
 
+use Cake\Http\Client;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\SocketException;
-use Cake\Network\Http\Client;
 
 /**
  * Send mail using SendGrid
