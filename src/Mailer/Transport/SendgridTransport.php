@@ -25,7 +25,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @var \Cake\Network\Http\Client
      */
-    public $http;
+    private $http;
 
     /**
      * Transport config for this class
