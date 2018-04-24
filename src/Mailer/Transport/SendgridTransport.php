@@ -10,10 +10,10 @@
 
 namespace SendgridEmail\Mailer\Transport;
 
+use Cake\Http\Client;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\SocketException;
-use Cake\Network\Http\Client;
 
 /**
  * Send mail using SendGrid
@@ -122,7 +122,7 @@ class SendgridTransport extends AbstractTransport
     protected function _attachments(Email $email, array $message = [])
     {
         foreach ($email->getAttachments() as $filename => $attach) {
-            $content = file_get_contents($attach['file']);
+            $content = isset($attach['data']) ? base64_decode($attach['data']) : file_get_contents($attach['file']);
             $message['files'][$filename] = $content;
             if (isset($attach['contentId'])) {
                 $message['content'][$filename] = $attach['contentId'];
