@@ -122,7 +122,7 @@ class SendgridTransport extends AbstractTransport
     protected function _attachments(Email $email, array $message = [])
     {
         foreach ($email->getAttachments() as $filename => $attach) {
-            $content = file_get_contents($attach['file']);
+            $content = isset($attach['data']) ? $attach['data'] : file_get_contents($attach['file']);
             $message['files'][$filename] = $content;
             if (isset($attach['contentId'])) {
                 $message['content'][$filename] = $attach['contentId'];
