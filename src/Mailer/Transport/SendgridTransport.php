@@ -14,6 +14,7 @@ use Cake\Http\Client;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
 use Cake\Network\Exception\SocketException;
+use SendgridEmail\Mailer\Exception\SendgridEmailException;
 
 /**
  * Send mail using SendGrid
@@ -99,7 +100,7 @@ class SendgridTransport extends AbstractTransport
         ];
         $response = $this->http->post('/api/mail.send.json', $message, $options);
         if ($response->getStatusCode() !== 200) {
-            throw new SocketException(sprintf(
+            throw new SendgridEmailException(sprintf(
                 'SendGrid error %s %s: %s',
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
