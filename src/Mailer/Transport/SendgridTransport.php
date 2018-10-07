@@ -91,7 +91,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @param  array $message The Message Array
      * @return array Returns an array with the results from the SendGrid API
-     * @throws SocketException
+     * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
      */
     protected function _send($message)
     {
