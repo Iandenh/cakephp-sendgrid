@@ -42,6 +42,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @param \Cake\Mailer\Email $email Email instance.
      * @return array
+     * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
      */
     public function send(Email $email)
     {
