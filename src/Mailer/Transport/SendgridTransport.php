@@ -12,9 +12,9 @@ namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
+use SendgridEmail\Mailer\Exception\SendgridEmailException;
 use SendGrid\Mail\Attachment;
 use SendGrid\Mail\Mail;
-use SendgridEmail\Mailer\Exception\SendgridEmailException;
 
 /**
  * Send mail using SendGrid
@@ -69,7 +69,7 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send normal email
      *
-     * @param Mail $email
+     * @param Mail $email the sendgrid api
      * @return array Returns an array with the results from the SendGrid API
      */
     protected function _send(Mail $email)
