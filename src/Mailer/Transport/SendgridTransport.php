@@ -10,10 +10,10 @@
 
 namespace SendgridEmail\Mailer\Transport;
 
-use Cake\Http\Client;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
-use Cake\Network\Exception\SocketException;
+use SendGrid\Mail\Attachment;
+use SendGrid\Mail\Mail;
 use SendgridEmail\Mailer\Exception\SendgridEmailException;
 
 /**
@@ -22,19 +22,14 @@ use SendgridEmail\Mailer\Exception\SendgridEmailException;
 class SendgridTransport extends AbstractTransport
 {
     /**
-     * Http client
-     *
-     * @var \Cake\Network\Http\Client
-     */
-    private $http;
-
-    /**
      * Transport config for this class
      *
      * @var array
      */
     protected $_defaultConfig = [
         'api_key' => null,
+        'click_tracking' => true,
+        'open_tracking' => true,
     ];
 
     /**
@@ -43,73 +38,58 @@ class SendgridTransport extends AbstractTransport
      * @param \Cake\Mailer\Email $email Email instance.
      * @return array
      * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
+     * @throws \SendGrid\Mail\TypeException
      */
     public function send(Email $email)
     {
-        $message = [
-            'html' => $email->message(Email::MESSAGE_HTML),
-            'text' => $email->message(Email::MESSAGE_TEXT),
-            'subject' => mb_decode_mimeheader($email->getSubject()), // Decode because SendGrid is encoding
-            'from' => key($email->getFrom()),
-            'fromname' => current($email->getFrom()),
-            'to' => [],
-            'toname' => [],
-            'cc' => [],
-            'ccname' => [],
-            'bcc' => [],
-            'bccname' => [],
-            'replyto' => $email->getReplyTo() ? array_values($email->getReplyTo())[0] : key($email->getFrom()),
-        ];
-        // Add recipients
-        $recipients = [
-            'to' => $email->getTo(),
-            'cc' => $email->getCc(),
-            'bcc' => $email->getBcc()
-        ];
-        foreach ($recipients as $type => $emails) {
-            foreach ($emails as $mail => $name) {
-                $message[$type][] = $mail;
-                $message[$type . 'name'][] = $name;
-            }
+        $sendgridMail = new Mail();
+        $sendgridMail->setFrom(key($email->getFrom()), current($email->getFrom()));
+        $sendgridMail->setSubject($email->getSubject());
+
+        $sendgridMail->addTos($email->getTo());
+        $sendgridMail->addBccs($email->getBcc());
+        $sendgridMail->addCcs($email->getCc());
+        $sendgridMail->setReplyTo($email->getReplyTo() ? array_values($email->getReplyTo())[0] : key($email->getFrom()));
+
+        if (!empty($email->message(Email::MESSAGE_TEXT))) {
+            $sendgridMail->addContent("text/plain", $email->message(Email::MESSAGE_TEXT));
         }
 
-        // Create a new scoped Http Client
-        $this->http = new Client([
-            'host' => 'api.sendgrid.com',
-            'scheme' => 'https',
-            'headers' => [
-                'User-Agent' => 'CakePHP SendGrid Plugin'
-            ]
-        ]);
+        if (!empty($email->message(Email::MESSAGE_HTML))) {
+            $sendgridMail->addContent("text/html", $email->message(Email::MESSAGE_HTML));
+        }
 
-        $message = $this->_attachments($email, $message);
+        $sendgridMail->addAttachments($this->_attachments($email));
+        $sendgridMail->setClickTracking($this->getConfig('click_tracking'));
+        $sendgridMail->setOpenTracking($this->getConfig('open_tracking'));
 
-        return $this->_send($message);
+        return $this->_send($sendgridMail);
     }
 
     /**
      * Send normal email
      *
-     * @param  array $message The Message Array
+     * @param Mail $email
      * @return array Returns an array with the results from the SendGrid API
-     * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
      */
-    protected function _send($message)
+    protected function _send(Mail $email)
     {
-        $options = [
-            'headers' => ['Authorization' => 'Bearer ' . $this->getConfig('api_key')]
-        ];
-        $response = $this->http->post('/api/mail.send.json', $message, $options);
-        if ($response->getStatusCode() !== 200) {
+        $sendgrid = new \SendGrid($this->getConfig('api_key'));
+        $response = $sendgrid->send($email);
+        if ($response->statusCode() >= 400) {
+            $errors = [];
+            foreach (json_decode($response->body())->errors as $error) {
+                $errors[] = $error->field . ": " . $error->message;
+            }
+
             throw new SendgridEmailException(sprintf(
-                'SendGrid error %s %s: %s',
-                $response->getStatusCode(),
-                $response->getReasonPhrase(),
-                implode('; ', $response->json['errors'])
+                'SendGrid error %s: %s',
+                $response->statusCode(),
+                implode('; ', $errors)
             ));
         }
 
-        return $response->json;
+        return json_decode($response->body());
     }
 
     /**
@@ -118,17 +98,22 @@ class SendgridTransport extends AbstractTransport
      * @param \Cake\Mailer\Email $email Email instance.
      * @param array $message A message array.
      * @return array Message
+     * @throws \SendGrid\Mail\TypeException
      */
-    protected function _attachments(Email $email, array $message = [])
+    protected function _attachments(Email $email)
     {
+        $attachments = [];
         foreach ($email->getAttachments() as $filename => $attach) {
             $content = isset($attach['data']) ? base64_decode($attach['data']) : file_get_contents($attach['file']);
-            $message['files'][$filename] = $content;
+            $attachment = new Attachment($content, $attach['mimetype'], $filename);
+
             if (isset($attach['contentId'])) {
-                $message['content'][$filename] = $attach['contentId'];
+                $attachment->setContentID($attach['contentId']);
+                $attachment->setDisposition('inline');
             }
+            $attachments[] = $attachment;
         }
 
-        return $message;
+        return $attachments;
     }
 }
