@@ -89,7 +89,7 @@ class SendgridTransport extends AbstractTransport
             ));
         }
 
-        return json_decode($response->body(), true);
+        return json_decode($response->body(), true) ?? [];
     }
 
     /**
