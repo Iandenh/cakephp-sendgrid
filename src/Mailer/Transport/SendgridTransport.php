@@ -11,7 +11,6 @@
 namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
-use Cake\Mailer\Email;
 use Cake\Mailer\Message;
 use SendgridEmail\Mailer\Exception\SendgridEmailException;
 use SendGrid\Mail\Attachment;
@@ -36,10 +35,9 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send mail
      *
-     * @param \Cake\Mailer\Email $email Email instance.
+     * @param \Cake\Mailer\Message $email Email instance.
      * @return array
      * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
-     * @throws \SendGrid\Mail\TypeException
      */
     public function send(Message $email): array
     {
@@ -52,12 +50,13 @@ class SendgridTransport extends AbstractTransport
         $sendgridMail->addCcs($email->getCc());
         $sendgridMail->setReplyTo($email->getReplyTo() ? array_values($email->getReplyTo())[0] : key($email->getFrom()));
 
-        if (!empty($email->message(Email::MESSAGE_TEXT))) {
-            $sendgridMail->addContent("text/plain", $email->message(Email::MESSAGE_TEXT));
+
+        if (!empty($email->getBodyText())) {
+            $sendgridMail->addContent("text/plain", $email->getBodyText());
         }
 
-        if (!empty($email->message(Email::MESSAGE_HTML))) {
-            $sendgridMail->addContent("text/html", $email->message(Email::MESSAGE_HTML));
+        if (!empty($email->getBodyHtml())) {
+            $sendgridMail->addContent("text/html", $email->getBodyHtml());
         }
 
         $sendgridMail->addAttachments($this->_attachments($email));
