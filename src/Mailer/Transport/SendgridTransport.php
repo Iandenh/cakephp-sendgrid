@@ -12,6 +12,7 @@ namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Email;
+use Cake\Mailer\Message;
 use SendgridEmail\Mailer\Exception\SendgridEmailException;
 use SendGrid\Mail\Attachment;
 use SendGrid\Mail\Mail;
@@ -40,7 +41,7 @@ class SendgridTransport extends AbstractTransport
      * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
      * @throws \SendGrid\Mail\TypeException
      */
-    public function send(Email $email)
+    public function send(Message $email): array
     {
         $sendgridMail = new Mail();
         $sendgridMail->setFrom(key($email->getFrom()), current($email->getFrom()));
@@ -72,7 +73,7 @@ class SendgridTransport extends AbstractTransport
      * @param Mail $email the sendgrid api
      * @return array Returns an array with the results from the SendGrid API
      */
-    protected function _send(Mail $email)
+    protected function _send(Mail $email): array
     {
         $sendgrid = new \SendGrid($this->getConfig('api_key'));
         $response = $sendgrid->send($email);
@@ -89,18 +90,16 @@ class SendgridTransport extends AbstractTransport
             ));
         }
 
-        return json_decode($response->body());
+        return json_decode($response->body(), true);
     }
 
     /**
      * Format the attachments
      *
-     * @param \Cake\Mailer\Email $email Email instance.
-     * @param array $message A message array.
-     * @return array Message
-     * @throws \SendGrid\Mail\TypeException
+     * @param \Cake\Mailer\Message $email Message instance.
+     * @return array Attachments
      */
-    protected function _attachments(Email $email)
+    protected function _attachments(Message $email): array
     {
         $attachments = [];
         foreach ($email->getAttachments() as $filename => $attach) {
