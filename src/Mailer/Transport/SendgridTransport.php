@@ -50,7 +50,6 @@ class SendgridTransport extends AbstractTransport
         $sendgridMail->addCcs($email->getCc());
         $sendgridMail->setReplyTo($email->getReplyTo() ? array_values($email->getReplyTo())[0] : key($email->getFrom()));
 
-
         if (!empty($email->getBodyText())) {
             $sendgridMail->addContent("text/plain", $email->getBodyText());
         }
