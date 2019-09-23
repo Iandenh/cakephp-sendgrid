@@ -96,7 +96,7 @@ class SendgridTransport extends AbstractTransport
      * Format the attachments
      *
      * @param \Cake\Mailer\Message $email Message instance.
-     * @return array Attachments
+     * @return \SendGrid\Mail\Attachment[]
      */
     protected function _attachments(Message $email): array
     {

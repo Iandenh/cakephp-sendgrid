@@ -12,18 +12,21 @@ composer require iandenh/cakephp-sendgrid
 ```
 
 ## Setting up your CakePHP application ##
+In you `app.php`:
 
 
     'Email' => [
         'Sendgrid' => [
             'transport' => 'SendgridEmail',
         ],
-        
     ],
     'EmailTransport' => [
         'SendgridEmail' => [
             'className' => 'SendgridEmail.Sendgrid',
-            'api_key' => 'API_KEY_HERE'
+            'api_key' => 'API_KEY_HERE',
+            // Config options below are added in version 2
+            "click_tracking" => false, // true or false to toggle sendgrids click tracking
+            "open_tracking" => false, // true or false to toggle sendgrids open tracking
         ]
     ]
 
