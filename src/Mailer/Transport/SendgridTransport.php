@@ -22,7 +22,7 @@ use SendGrid\Mail\Mail;
 class SendgridTransport extends AbstractTransport
 {
     /**
-     * Transport config for this class
+     * Default config for this class
      *
      * @var array
      */
@@ -69,7 +69,7 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send normal email
      *
-     * @param Mail $email the sendgrid api
+     * @param \SendGrid\Mail\Mail $email the SendGrid api
      * @return array Returns an array with the results from the SendGrid API
      */
     protected function _send(Mail $email)
@@ -97,6 +97,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @param \Cake\Mailer\Email $email Email instance.
      * @return \SendGrid\Mail\Attachment[]
+     * @throws \SendGrid\Mail\TypeException
      */
     protected function _attachments(Email $email)
     {
