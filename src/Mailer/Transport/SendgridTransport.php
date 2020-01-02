@@ -22,7 +22,7 @@ use SendGrid\Mail\Mail;
 class SendgridTransport extends AbstractTransport
 {
     /**
-     * Transport config for this class
+     * Default config for this class
      *
      * @var array
      */
@@ -88,7 +88,7 @@ class SendgridTransport extends AbstractTransport
             ));
         }
 
-        return json_decode($response->body(), true) ?? [];
+        return ["message" => "success"];
     }
 
     /**
