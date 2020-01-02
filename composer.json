@@ -13,7 +13,7 @@
         "source": "https://github.com/Iandenh/cakephp-sendgrid"
     },
     "require": {
-        "php": ">=7.1.0",
+        "php": ">=7.2.0",
         "ext-json": "*",
         "cakephp/cakephp": "~4.0",
         "sendgrid/sendgrid": "^7.3"
@@ -29,5 +29,6 @@
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
