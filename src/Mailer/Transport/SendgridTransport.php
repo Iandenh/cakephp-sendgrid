@@ -38,6 +38,7 @@ class SendgridTransport extends AbstractTransport
      * @param \Cake\Mailer\Message $email Email instance.
      * @return array
      * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
+     * @throws \SendGrid\Mail\TypeException
      */
     public function send(Message $email): array
     {
@@ -68,7 +69,7 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send normal email
      *
-     * @param Mail $email the sendgrid api
+     * @param \SendGrid\Mail\Mail $email the sendgrid api
      * @return array Returns an array with the results from the SendGrid API
      */
     protected function _send(Mail $email): array
@@ -96,6 +97,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @param \Cake\Mailer\Message $email Message instance.
      * @return \SendGrid\Mail\Attachment[]
+     * @throws \SendGrid\Mail\TypeException
      */
     protected function _attachments(Message $email): array
     {
