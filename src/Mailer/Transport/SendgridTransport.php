@@ -56,7 +56,7 @@ class SendgridTransport extends AbstractTransport
             'ccname' => [],
             'bcc' => [],
             'bccname' => [],
-            'replyto' => $email->getReplyTo() ? array_values($email->getReplyTo())[0] : key($email->getFrom()),
+            'replyto' => $email->getReplyTo() ? key($email->getReplyTo()) : key($email->getFrom()),
         ];
         // Add recipients
         $recipients = [
