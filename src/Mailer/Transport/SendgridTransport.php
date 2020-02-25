@@ -44,7 +44,7 @@ class SendgridTransport extends AbstractTransport
     {
         $sendgridMail = new Mail();
         $sendgridMail->setFrom(key($email->getFrom()), current($email->getFrom()));
-        $sendgridMail->setSubject($email->getSubject());
+        $sendgridMail->setSubject($email->getOriginalSubject());
 
         $sendgridMail->addTos($email->getTo());
         $sendgridMail->addBccs($email->getBcc());
