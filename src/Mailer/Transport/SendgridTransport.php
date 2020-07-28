@@ -59,11 +59,11 @@ class SendgridTransport extends AbstractTransport
         $sendgridMail->setReplyTo($email->getReplyTo() ? key($email->getReplyTo()) : key($email->getFrom()));
 
         if (!empty($email->getBodyText())) {
-            $sendgridMail->addContent("text/plain", $email->getBodyText());
+            $sendgridMail->addContent('text/plain', $email->getBodyText());
         }
 
         if (!empty($email->getBodyHtml())) {
-            $sendgridMail->addContent("text/html", $email->getBodyHtml());
+            $sendgridMail->addContent('text/html', $email->getBodyHtml());
         }
 
         $sendgridMail->addAttachments($this->_attachments($email));
@@ -96,7 +96,7 @@ class SendgridTransport extends AbstractTransport
             ));
         }
 
-        return ["message" => "success"];
+        return ['message' => 'success'];
     }
 
     /**
