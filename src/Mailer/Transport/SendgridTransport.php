@@ -126,19 +126,19 @@ class SendgridTransport extends AbstractTransport
     /**
      * Wrap illegal local part in double quote
      *
-     * @param array $raw_array
-     *   Array with email as key, name as value
+     * @param array $raw_array Array with email as key, name as value
      * @return array $array
      */
     protected function _wrapIllegalLocalPartInDoubleQuote(array $raw_array): array
     {
         $array = [];
-        foreach($raw_array as $mail => $name) {
-            if (preg_match("/^(\.[^@]*|(?=[^@]*\.{2,})[^@]*|[^@]*\.)@.*$/", $mail)) {
-                $mail = preg_replace("/([^@]+)(@.*)$/", '"$1"$2', $mail);
+        foreach ($raw_array as $mail => $name) {
+            if (preg_match('/^(\.[^@]*|(?=[^@]*\.{2,})[^@]*|[^@]*\.)@.*$/', $mail)) {
+                $mail = preg_replace('/([^@]+)(@.*)$/', '"$1"$2', $mail);
             }
             $array[$mail] = $name;
         }
+
         return $array;
     }
 }
