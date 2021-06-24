@@ -129,10 +129,10 @@ class SendgridTransport extends AbstractTransport
      * @param array $raw_array Array with email as key, name as value
      * @return array $array
      */
-    protected function _wrapIllegalLocalPartInDoubleQuote(array $raw_array): array
+    protected function _wrapIllegalLocalPartInDoubleQuote(array $rawArray): array
     {
         $array = [];
-        foreach ($raw_array as $mail => $name) {
+        foreach ($rawArray as $mail => $name) {
             if (preg_match('/^(\.[^@]*|(?=[^@]*\.{2,})[^@]*|[^@]*\.)@.*$/', $mail)) {
                 $mail = preg_replace('/([^@]+)(@.*)$/', '"$1"$2', $mail);
             }
