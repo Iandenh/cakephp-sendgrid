@@ -126,7 +126,7 @@ class SendgridTransport extends AbstractTransport
     /**
      * Wrap illegal local part in double quote
      *
-     * @param array $raw_array Array with email as key, name as value
+     * @param array $rawArray Array with email as key, name as value
      * @return array $array
      */
     protected function _wrapIllegalLocalPartInDoubleQuote(array $rawArray): array
