@@ -46,14 +46,14 @@ class SendgridTransport extends AbstractTransport
         $sendgridMail->setFrom(key($email->getFrom()), current($email->getFrom()));
         $sendgridMail->setSubject($email->getOriginalSubject());
 
-        $sendgridMail->addTos($email->getTo());
+        $sendgridMail->addTos($this->_wrapIllegalLocalPartInDoubleQuote($email->getTo()));
 
         if (!empty($email->getCc())) {
-            $sendgridMail->addCcs($email->getCc());
+            $sendgridMail->addCcs($this->_wrapIllegalLocalPartInDoubleQuote($email->getCc()));
         }
 
         if (!empty($email->getBcc())) {
-            $sendgridMail->addBccs($email->getBcc());
+            $sendgridMail->addBccs($this->_wrapIllegalLocalPartInDoubleQuote($email->getBcc()));
         }
 
         $sendgridMail->setReplyTo($email->getReplyTo() ? key($email->getReplyTo()) : key($email->getFrom()));
@@ -121,5 +121,24 @@ class SendgridTransport extends AbstractTransport
         }
 
         return $attachments;
+    }
+
+    /**
+     * Wrap illegal local part in double quote
+     *
+     * @param array $rawArray Array with email as key, name as value
+     * @return array $array
+     */
+    protected function _wrapIllegalLocalPartInDoubleQuote(array $rawArray): array
+    {
+        $array = [];
+        foreach ($rawArray as $mail => $name) {
+            if (preg_match('/^(\.[^@]*|(?=[^@]*\.{2,})[^@]*|[^@]*\.)@.*$/', $mail)) {
+                $mail = preg_replace('/([^@]+)(@.*)$/', '"$1"$2', $mail);
+            }
+            $array[$mail] = $name;
+        }
+
+        return $array;
     }
 }
