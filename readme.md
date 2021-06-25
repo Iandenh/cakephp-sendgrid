@@ -1,6 +1,7 @@
 # CakePHP SendGrid plugin
 
-This is a Sendgrid Email Transport plugin for CakePHP 3.
+This is a Sendgrid Email Transport plugin for CakePHP 3 and 4.
+This branch contains the code for CakePHP 4, check branch `master` for CakePHP 3.
 
 ## Installation
 
