@@ -11,7 +11,7 @@
 namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
-use Cake\Mailer\Email;
+use Cake\Mailer\Message;
 use SendgridEmail\Mailer\Exception\SendgridEmailException;
 use SendGrid\Mail\Attachment;
 use SendGrid\Mail\Mail;
@@ -35,35 +35,35 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send mail
      *
-     * @param \Cake\Mailer\Email $email Email instance.
+     * @param \Cake\Mailer\Message $email Email instance.
      * @return array
      * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
      * @throws \SendGrid\Mail\TypeException
      */
-    public function send(Email $email)
+    public function send(Message $email): array
     {
         $sendgridMail = new Mail();
         $sendgridMail->setFrom(key($email->getFrom()), current($email->getFrom()));
         $sendgridMail->setSubject($email->getOriginalSubject());
 
-        $sendgridMail->addTos($email->getTo());
+        $sendgridMail->addTos($this->_wrapIllegalLocalPartInDoubleQuote($email->getTo()));
 
         if (!empty($email->getCc())) {
-            $sendgridMail->addCcs($email->getCc());
+            $sendgridMail->addCcs($this->_wrapIllegalLocalPartInDoubleQuote($email->getCc()));
         }
 
         if (!empty($email->getBcc())) {
-            $sendgridMail->addBccs($email->getBcc());
+            $sendgridMail->addBccs($this->_wrapIllegalLocalPartInDoubleQuote($email->getBcc()));
         }
 
         $sendgridMail->setReplyTo($email->getReplyTo() ? key($email->getReplyTo()) : key($email->getFrom()));
 
-        if (!empty($email->message(Email::MESSAGE_TEXT))) {
-            $sendgridMail->addContent("text/plain", $email->message(Email::MESSAGE_TEXT));
+        if (!empty($email->getBodyText())) {
+            $sendgridMail->addContent('text/plain', $email->getBodyText());
         }
 
-        if (!empty($email->message(Email::MESSAGE_HTML))) {
-            $sendgridMail->addContent("text/html", $email->message(Email::MESSAGE_HTML));
+        if (!empty($email->getBodyHtml())) {
+            $sendgridMail->addContent('text/html', $email->getBodyHtml());
         }
 
         $sendgridMail->addAttachments($this->_attachments($email));
@@ -76,10 +76,10 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send normal email
      *
-     * @param \SendGrid\Mail\Mail $email the SendGrid api
+     * @param \SendGrid\Mail\Mail $email the sendgrid api
      * @return array Returns an array with the results from the SendGrid API
      */
-    protected function _send(Mail $email)
+    protected function _send(Mail $email): array
     {
         $sendgrid = new \SendGrid($this->getConfig('api_key'));
         $response = $sendgrid->send($email);
@@ -96,17 +96,17 @@ class SendgridTransport extends AbstractTransport
             ));
         }
 
-        return ["message" => "success"];
+        return ['message' => 'success'];
     }
 
     /**
      * Format the attachments
      *
-     * @param \Cake\Mailer\Email $email Email instance.
+     * @param \Cake\Mailer\Message $email Message instance.
      * @return \SendGrid\Mail\Attachment[]
      * @throws \SendGrid\Mail\TypeException
      */
-    protected function _attachments(Email $email)
+    protected function _attachments(Message $email): array
     {
         $attachments = [];
         foreach ($email->getAttachments() as $filename => $attach) {
@@ -121,5 +121,24 @@ class SendgridTransport extends AbstractTransport
         }
 
         return $attachments;
+    }
+
+    /**
+     * Wrap illegal local part in double quote
+     *
+     * @param array $rawArray Array with email as key, name as value
+     * @return array $array
+     */
+    protected function _wrapIllegalLocalPartInDoubleQuote(array $rawArray): array
+    {
+        $array = [];
+        foreach ($rawArray as $mail => $name) {
+            if (preg_match('/^(\.[^@]*|(?=[^@]*\.{2,})[^@]*|[^@]*\.)@.*$/', $mail)) {
+                $mail = preg_replace('/([^@]+)(@.*)$/', '"$1"$2', $mail);
+            }
+            $array[$mail] = $name;
+        }
+
+        return $array;
     }
 }
