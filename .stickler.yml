@@ -1,6 +1,0 @@
-linters:
-  phpcs:
-    standard: CakePHP
-files:
-  ignore:
-    - 'vendor/*'
