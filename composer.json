@@ -16,7 +16,7 @@
         "php": ">=7.2.0",
         "ext-json": "*",
         "cakephp/cakephp": "~4.0",
-        "sendgrid/sendgrid": "^7.3"
+        "sendgrid/sendgrid": "^7.3 || ^8"
     },
     "autoload": {
         "psr-4": {

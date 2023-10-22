@@ -12,6 +12,7 @@ namespace SendgridEmail\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Message;
+use SendGrid;
 use SendgridEmail\Mailer\Exception\SendgridEmailException;
 use SendGrid\Mail\Attachment;
 use SendGrid\Mail\Mail;
@@ -35,38 +36,38 @@ class SendgridTransport extends AbstractTransport
     /**
      * Send mail
      *
-     * @param \Cake\Mailer\Message $email Email instance.
+     * @param \Cake\Mailer\Message $message Email message
      * @return array
      * @throws \SendgridEmail\Mailer\Exception\SendgridEmailException
      * @throws \SendGrid\Mail\TypeException
      */
-    public function send(Message $email): array
+    public function send(Message $message): array
     {
         $sendgridMail = new Mail();
-        $sendgridMail->setFrom(key($email->getFrom()), current($email->getFrom()));
-        $sendgridMail->setSubject($email->getOriginalSubject());
+        $sendgridMail->setFrom(key($message->getFrom()), current($message->getFrom()));
+        $sendgridMail->setSubject($message->getOriginalSubject());
 
-        $sendgridMail->addTos($this->_wrapIllegalLocalPartInDoubleQuote($email->getTo()));
+        $sendgridMail->addTos($this->_wrapIllegalLocalPartInDoubleQuote($message->getTo()));
 
-        if (!empty($email->getCc())) {
-            $sendgridMail->addCcs($this->_wrapIllegalLocalPartInDoubleQuote($email->getCc()));
+        if (!empty($message->getCc())) {
+            $sendgridMail->addCcs($this->_wrapIllegalLocalPartInDoubleQuote($message->getCc()));
         }
 
-        if (!empty($email->getBcc())) {
-            $sendgridMail->addBccs($this->_wrapIllegalLocalPartInDoubleQuote($email->getBcc()));
+        if (!empty($message->getBcc())) {
+            $sendgridMail->addBccs($this->_wrapIllegalLocalPartInDoubleQuote($message->getBcc()));
         }
 
-        $sendgridMail->setReplyTo($email->getReplyTo() ? key($email->getReplyTo()) : key($email->getFrom()));
+        $sendgridMail->setReplyTo($message->getReplyTo() ? key($message->getReplyTo()) : key($message->getFrom()));
 
-        if (!empty($email->getBodyText())) {
-            $sendgridMail->addContent('text/plain', $email->getBodyText());
+        if (!empty($message->getBodyText())) {
+            $sendgridMail->addContent('text/plain', $message->getBodyText());
         }
 
-        if (!empty($email->getBodyHtml())) {
-            $sendgridMail->addContent('text/html', $email->getBodyHtml());
+        if (!empty($message->getBodyHtml())) {
+            $sendgridMail->addContent('text/html', $message->getBodyHtml());
         }
 
-        $sendgridMail->addAttachments($this->_attachments($email));
+        $sendgridMail->addAttachments($this->_attachments($message));
         $sendgridMail->setClickTracking($this->getConfig('click_tracking'));
         $sendgridMail->setOpenTracking($this->getConfig('open_tracking'));
 
@@ -81,11 +82,11 @@ class SendgridTransport extends AbstractTransport
      */
     protected function _send(Mail $email): array
     {
-        $sendgrid = new \SendGrid($this->getConfig('api_key'));
+        $sendgrid = new SendGrid($this->getConfig('api_key'));
         $response = $sendgrid->send($email);
         if ($response->statusCode() >= 400) {
             $errors = [];
-            foreach (json_decode($response->body())->errors as $error) {
+            foreach (json_decode($response->body(), false)->errors as $error) {
                 $errors[] = $error->field . ": " . $error->message;
             }
 
