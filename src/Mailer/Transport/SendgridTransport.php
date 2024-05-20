@@ -47,14 +47,14 @@ class SendgridTransport extends AbstractTransport
         $sendgridMail->setFrom(key($message->getFrom()), current($message->getFrom()));
         $sendgridMail->setSubject($message->getOriginalSubject());
 
-        $sendgridMail->addTos($this->_wrapIllegalLocalPartInDoubleQuote($message->getTo()));
+        $sendgridMail->addTos($this->wrapIllegalLocalPartInDoubleQuote($message->getTo()));
 
         if (!empty($message->getCc())) {
-            $sendgridMail->addCcs($this->_wrapIllegalLocalPartInDoubleQuote($message->getCc()));
+            $sendgridMail->addCcs($this->wrapIllegalLocalPartInDoubleQuote($message->getCc()));
         }
 
         if (!empty($message->getBcc())) {
-            $sendgridMail->addBccs($this->_wrapIllegalLocalPartInDoubleQuote($message->getBcc()));
+            $sendgridMail->addBccs($this->wrapIllegalLocalPartInDoubleQuote($message->getBcc()));
         }
 
         $sendgridMail->setReplyTo($message->getReplyTo() ? key($message->getReplyTo()) : key($message->getFrom()));
@@ -67,11 +67,11 @@ class SendgridTransport extends AbstractTransport
             $sendgridMail->addContent('text/html', $message->getBodyHtml());
         }
 
-        $sendgridMail->addAttachments($this->_attachments($message));
+        $sendgridMail->addAttachments($this->attachments($message));
         $sendgridMail->setClickTracking($this->getConfig('click_tracking'));
         $sendgridMail->setOpenTracking($this->getConfig('open_tracking'));
 
-        return $this->_send($sendgridMail);
+        return $this->sendMail($sendgridMail);
     }
 
     /**
@@ -80,10 +80,11 @@ class SendgridTransport extends AbstractTransport
      * @param \SendGrid\Mail\Mail $email the sendgrid api
      * @return array Returns an array with the results from the SendGrid API
      */
-    protected function _send(Mail $email): array
+    private function sendMail(Mail $email): array
     {
         $sendgrid = new SendGrid($this->getConfig('api_key'));
         $response = $sendgrid->send($email);
+
         if ($response->statusCode() >= 400) {
             $errors = [];
             foreach (json_decode($response->body(), false)->errors as $error) {
@@ -107,7 +108,7 @@ class SendgridTransport extends AbstractTransport
      * @return \SendGrid\Mail\Attachment[]
      * @throws \SendGrid\Mail\TypeException
      */
-    protected function _attachments(Message $email): array
+    private function attachments(Message $email): array
     {
         $attachments = [];
         foreach ($email->getAttachments() as $filename => $attach) {
@@ -118,6 +119,7 @@ class SendgridTransport extends AbstractTransport
                 $attachment->setContentID($attach['contentId']);
                 $attachment->setDisposition('inline');
             }
+
             $attachments[] = $attachment;
         }
 
@@ -130,7 +132,7 @@ class SendgridTransport extends AbstractTransport
      * @param array $rawArray Array with email as key, name as value
      * @return array $array
      */
-    protected function _wrapIllegalLocalPartInDoubleQuote(array $rawArray): array
+    private function wrapIllegalLocalPartInDoubleQuote(array $rawArray): array
     {
         $array = [];
         foreach ($rawArray as $mail => $name) {
