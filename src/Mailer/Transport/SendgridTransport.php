@@ -27,7 +27,7 @@ class SendgridTransport extends AbstractTransport
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'api_key' => null,
         'click_tracking' => true,
         'open_tracking' => true,
