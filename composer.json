@@ -13,6 +13,7 @@
         "source": "https://github.com/Iandenh/cakephp-sendgrid"
     },
     "require": {
+        "php": ">=8.1",
         "ext-json": "*",
         "cakephp/cakephp": "^5.0",
         "sendgrid/sendgrid": "^7.3 || ^8"
